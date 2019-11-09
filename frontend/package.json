@@ -15,7 +15,7 @@
     "todo-rpg-api": "file:gen/api"
   },
   "scripts": {
-    "start": "GOOGLE_CLIENT_ID=\"848941796451-a83bla4b2vk7oqvrbti9tat7urvqd41r.apps.googleusercontent.com\" react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

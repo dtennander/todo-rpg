@@ -13,7 +13,7 @@ const theme = {
   white: "#EFF0D1"
 };
 
-const { GOOGLE_CLIENT_ID } = process.env;
+const GOOGLE_CLIENT_ID = "848941796451-a83bla4b2vk7oqvrbti9tat7urvqd41r.apps.googleusercontent.com";
 
 
 function App() {
