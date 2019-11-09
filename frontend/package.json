@@ -8,13 +8,14 @@
     "jss": "^10.0.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
+    "react-google-login": "^5.0.7",
     "react-jss": "^10.0.0",
     "react-scripts": "3.2.0",
     "react-transition-group": "^4.3.0",
     "todo-rpg-api": "file:gen/api"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "GOOGLE_CLIENT_ID=\"848941796451-a83bla4b2vk7oqvrbti9tat7urvqd41r.apps.googleusercontent.com\" react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
