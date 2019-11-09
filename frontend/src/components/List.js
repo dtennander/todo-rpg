@@ -7,7 +7,14 @@ const useStyles = createUseStyles(theme => ({
     color: theme.white,
     border: `4px solid ${theme.between}`,
     borderRadius: 12,
-    padding: "12px 48px"
+    padding: "12px 48px",
+    maxHeight: "90vh",
+    display: "grid",
+    gridTemplateRows: "auto 1fr auto",
+    gridGap: 12
+  },
+  listContainer: {
+    overflow: "scroll"
   },
   todo: {
     textAlign: "left",
@@ -24,6 +31,51 @@ const useStyles = createUseStyles(theme => ({
 const mockdata = {
   title: "Make todo-app",
   todos: [
+    {
+      title: "Frontend",
+      todos: [
+        {
+          title: "Landing page",
+          todos: [
+            {
+              title: "Dashboard",
+              todos: [
+                {
+                  title: "Animations",
+                  todos: []
+                },
+                {
+                  title: "Routing",
+                  todos: []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      title: "Backend",
+      todos: [
+        {
+          title: "Remove CORS",
+          todos: []
+        },
+        {
+          title: "DB-stuff",
+          todos: [
+            {
+              title: "Users",
+              todos: []
+            },
+            {
+              title: "Todos",
+              todos: []
+            }
+          ]
+        }
+      ]
+    },
     {
       title: "Frontend",
       todos: [
@@ -88,7 +140,7 @@ const ListItem = ({ title, todos }) => {
 const List = () => {
   const [data, setData] = useState(null);
   const theme = useTheme();
-  const { container } = useStyles(theme);
+  const { container, listContainer } = useStyles(theme);
   useEffect(() => {
     setData(mockdata);
   }, []);
@@ -96,9 +148,12 @@ const List = () => {
   return (
     <div className={container}>
       <h1>{data.title}</h1>
-      {data.todos.map(todo => {
-        return <ListItem {...todo} />;
-      })}
+      <div className={listContainer}>
+        {data.todos.map(todo => {
+          return <ListItem {...todo} />;
+        })}
+      </div>
+      <button>Save</button>
     </div>
   );
 };
