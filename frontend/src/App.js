@@ -1,7 +1,7 @@
 import React from "react";
 import { Router } from "@reach/router";
 import { ThemeProvider } from "theming";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/Dashboard.js";
 import "./App.css";
 
 let Landing = () => <div>Login</div>;
