@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import { Router, navigate } from "@reach/router";
-import { ThemeProvider } from "theming";
+import {ThemeProvider} from "theming";
 import Dashboard from "./pages/Dashboard.js";
 import "./App.css";
 import Landing from "./pages/Landing";
@@ -16,26 +15,26 @@ const theme = {
 const GOOGLE_CLIENT_ID = "848941796451-a83bla4b2vk7oqvrbti9tat7urvqd41r.apps.googleusercontent.com";
 
 
+const MainPage = ({token, handleToken}) => {
+  console.log("RENDERING");
+  const loggedIn = token !== null;
+  if (loggedIn) {
+    return <Dashboard token={token}/>
+  } else {
+    return  <Landing clientId={GOOGLE_CLIENT_ID} storeToken={handleToken} handleError={console.log}/>
+  }
+};
+
 function App() {
   const [token, setToken] = useState(null);
-
-  const handleToken = token => {
-    setToken(token);
-    navigate("/dashboard")
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
-        <Router>
-          <Landing path="/" clientId={GOOGLE_CLIENT_ID} storeToken={handleToken} handleError={console.log}/>
-          <Dashboard path="/dashboard" token={token}/>
-        </Router>
+        <MainPage token={token} handleToken={setToken}/>
       </div>
     </ThemeProvider>
   );
 }
-
 
 
 export default App;
