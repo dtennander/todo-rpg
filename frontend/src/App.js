@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {ThemeProvider} from "theming";
+import React, { useState, useEffect } from "react";
+import { ThemeProvider } from "theming";
 import Dashboard from "./pages/Dashboard.js";
 import "./App.css";
 import Landing from "./pages/Landing";
@@ -12,29 +12,45 @@ const theme = {
   white: "#EFF0D1"
 };
 
-const GOOGLE_CLIENT_ID = "848941796451-a83bla4b2vk7oqvrbti9tat7urvqd41r.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID =
+  "848941796451-a83bla4b2vk7oqvrbti9tat7urvqd41r.apps.googleusercontent.com";
 
-
-const MainPage = ({token, handleToken}) => {
+const MainPage = ({ token, handleToken }) => {
   console.log("RENDERING");
   const loggedIn = token !== null;
   if (loggedIn) {
-    return <Dashboard token={token}/>
+    return <Dashboard token={token} />;
   } else {
-    return  <Landing clientId={GOOGLE_CLIENT_ID} storeToken={handleToken} handleError={console.log}/>
+    return (
+      <Landing
+        clientId={GOOGLE_CLIENT_ID}
+        storeToken={handleToken}
+        handleError={console.log}
+      />
+    );
   }
 };
 
 function App() {
   const [token, setToken] = useState(null);
+
+  const handleToken = token => {
+    localStorage.setItem("token", token);
+    setToken(token);
+  };
+
+  useEffect(() => {
+    const t = localStorage.getItem("token");
+    if (t) setToken(t);
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
-        <MainPage token={token} handleToken={setToken}/>
+        <MainPage token={token} handleToken={handleToken} />
       </div>
     </ThemeProvider>
   );
 }
-
 
 export default App;
