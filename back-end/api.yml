@@ -3,6 +3,9 @@ info:
   title: To-Do RPG API
   version: 0.1.0
   description: The API of the To-Do RPG web app. Available for all to use to integrate agains us.
+servers:
+  - url: https://todo-rpg-api.herokuapp.com/
+  - url: https://todo-rpg-api-staging.herokuapp.com/
 tags:
   - name: Users
     description: Informtaion about the user.
