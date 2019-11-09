@@ -2,6 +2,7 @@ package com.github.dtennander.todorpg
 
 import cats.effect._
 import cats.implicits._
+import com.github.dtennander.todorpg.auth.{GoogleTokenValidator, TokenValidator}
 import com.github.dtennander.todorpg.endpoints.lists.ListsResource
 import com.github.dtennander.todorpg.endpoints.todos.TodosResource
 import com.github.dtennander.todorpg.endpoints.users.UsersResource
@@ -16,7 +17,9 @@ object Backend extends IOApp {
 
   def stream[F[_]: ConcurrentEffect](implicit T: Timer[F], C: ContextShift[F]): Stream[F, Nothing] = {
       for {
-        httpApp <- Stream(addMiddleware(routes).orNotFound)
+        googlesClientId <- Stream.eval(getGoogleClientId)
+        validator <- Stream.eval(GoogleTokenValidator.withToken(googlesClientId))
+        httpApp <- Stream(addMiddleware(routes(validator)).orNotFound)
         finalHttpApp = Logger.httpApp(logHeaders = true, logBody = true)(httpApp)
         port <- Stream.eval(getPort)
         exitCode <- BlazeServerBuilder[F]
@@ -30,8 +33,8 @@ object Backend extends IOApp {
     CORS(routes)
   }
 
-  private def routes[F[_] : ConcurrentEffect]: HttpRoutes[F] =
-      new UsersResource[F]().routes(new UserHandlerImpl[F]()) <+>
+  private def routes[F[_] : ConcurrentEffect](validator: TokenValidator[F]): HttpRoutes[F] =
+      new UsersResource[F]().routes(new UserHandlerImpl[F](validator)) <+>
       new ListsResource[F]().routes(new lists.ListHandlerImpl[F]()) <+>
       new TodosResource[F]().routes(new todos.TodosHandlerImpl[F]())
 
@@ -41,6 +44,8 @@ object Backend extends IOApp {
       case Right(p) => p.toInt
       case Left(_) => 8080
     }
+
+  def getGoogleClientId[F[_]: Sync]: F[String] = Sync[F].delay(sys.env("GOOGLE_CLIENT_ID"))
 
   def run(args: List[String]): IO[ExitCode] = Backend.stream[IO].compile.drain.as(ExitCode.Success)
 }
