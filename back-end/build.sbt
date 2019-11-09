@@ -27,5 +27,6 @@ libraryDependencies ++= Seq(
   "io.circe"        %% "circe-generic"       % CirceVersion,
   "io.circe"        %% "circe-java8"         % CirceVersion,
   "org.specs2"      %% "specs2-core"         % Specs2Version % "test",
-  "ch.qos.logback"  %  "logback-classic"     % LogbackVersion
+  "ch.qos.logback"  %  "logback-classic"     % LogbackVersion,
+  "com.google.api-client" % "google-api-client" % "1.22.0"
 )

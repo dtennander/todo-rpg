@@ -17,6 +17,12 @@ paths:
   /user:
     get:
       summary: Get user
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
       operationId: getUser
       x-jvm-package: users
       tags:
@@ -169,6 +175,7 @@ components:
       required:
         - id
         - short_name
+        - picture
       properties:
         id:
           type: string
@@ -176,6 +183,9 @@ components:
         short_name:
           type: string
           example: David
+        picture:
+          type: string
+          example: https://google.com/picture/my_image.png
     Error:
       type: object
       required:
