@@ -12,6 +12,7 @@ guardrailTasks in Compile := List(
   ScalaServer(file("api.yml"), pkg="com.github.dtennander.todorpg.endpoints", framework="http4s"),
 )
 
+enablePlugins(JavaAppPackaging)
 
 val Http4sVersion = "0.20.0"
 val CirceVersion = "0.11.1"
