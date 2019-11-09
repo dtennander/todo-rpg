@@ -3,6 +3,9 @@ info:
   title: To-Do RPG API
   version: 0.1.0
   description: The API of the To-Do RPG web app. Available for all to use to integrate agains us.
+servers:
+  - url: https://todo-rpg-api.herokuapp.com/
+  - url: https://todo-rpg-api-staging.herokuapp.com/
 tags:
   - name: Users
     description: Informtaion about the user.
@@ -86,6 +89,7 @@ paths:
         - in: path
           name: id
           description: The id of the list to get.
+          required: true
           schema:
             type: integer
             example: 1
@@ -108,6 +112,7 @@ paths:
         - in: path
           name: id
           description: The id of the ToDo to get.
+          required: true
           schema:
             type: integer
             example: 123
@@ -128,6 +133,7 @@ paths:
         - in: path
           name: id
           description: The id of the ToDo to get.
+          required: true
           schema:
             type: integer
             example:
@@ -160,6 +166,9 @@ components:
   schemas:
     User:
       type: object
+      required:
+        - id
+        - short_name
       properties:
         id:
           type: string
@@ -169,6 +178,9 @@ components:
           example: David
     Error:
       type: object
+      required:
+        - error_code
+        - message
       properties:
         error_code:
           type: integer
@@ -180,6 +192,11 @@ components:
             Internal Server Error
     SmallListView:
       type: object
+      required:
+        - id
+        - self_ref
+        - name
+        - experience
       properties:
         id:
           type: integer
@@ -192,6 +209,9 @@ components:
           example: Städa
         experience:
           type: object
+          required:
+            - progress
+            - max
           properties:
             progress:
               type: integer
@@ -208,14 +228,20 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Todo'
+          required:
+            - todos
     WriteListView:
       type: object
+      required:
+        - name
       properties:
         name:
           type: string
           example: Städa
     TodoId:
       type: object
+      required:
+        - id
       properties:
         id:
           type: integer
@@ -224,6 +250,10 @@ components:
       allOf:
         - $ref: '#/components/schemas/TodoId'
         - type: object
+          required:
+            - children
+            - text
+            - done
           properties:
             children:
               type: array
@@ -238,6 +268,10 @@ components:
                 false
     WriteTodo:
       type: object
+      required:
+        - text
+        - done
+        - children
       properties:
         text:
           type: string
