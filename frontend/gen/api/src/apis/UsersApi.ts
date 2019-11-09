@@ -20,6 +20,10 @@ import {
     UserToJSON,
 } from '../models';
 
+export interface GetUserRequest {
+    Authorization: string;
+}
+
 /**
  * no description
  */
@@ -28,10 +32,18 @@ export class UsersApi extends runtime.BaseAPI {
     /**
      * Get user
      */
-    async getUserRaw(): Promise<runtime.ApiResponse<User>> {
+    async getUserRaw(requestParameters: GetUserRequest): Promise<runtime.ApiResponse<User>> {
+        if (requestParameters.Authorization === null || requestParameters.Authorization === undefined) {
+            throw new runtime.RequiredError('Authorization','Required parameter requestParameters.Authorization was null or undefined when calling getUser.');
+        }
+
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters.Authorization !== undefined && requestParameters.Authorization !== null) {
+            headerParameters['Authorization'] = String(requestParameters.Authorization);
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -55,8 +67,8 @@ export class UsersApi extends runtime.BaseAPI {
     /**
      * Get user
      */
-    async getUser(): Promise<User> {
-        const response = await this.getUserRaw();
+    async getUser(requestParameters: GetUserRequest): Promise<User> {
+        const response = await this.getUserRaw(requestParameters);
         return await response.value();
     }
 

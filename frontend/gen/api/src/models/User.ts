@@ -31,6 +31,12 @@ export interface User {
      * @memberof User
      */
     short_name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    picture: string;
 }
 
 export function UserFromJSON(json: any): User {
@@ -45,6 +51,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         
         'id': json['id'],
         'short_name': json['short_name'],
+        'picture': json['picture'],
     };
 }
 
@@ -59,6 +66,7 @@ export function UserToJSON(value?: User | null): any {
         
         'id': value.id,
         'short_name': value.short_name,
+        'picture': value.picture,
     };
 }
 
