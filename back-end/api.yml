@@ -1,0 +1,259 @@
+openapi: 3.0.0
+info:
+  title: To-Do RPG API
+  version: 0.1.0
+  description: The API of the To-Do RPG web app. Available for all to use to integrate agains us.
+tags:
+  - name: Users
+    description: Informtaion about the user.
+  - name: Lists
+    description: Information about different lists.
+  - name: ToDos
+    description: ToDos in the system.
+paths:
+  /user:
+    get:
+      summary: Get user
+      operationId: getUser
+      x-jvm-package: users
+      tags:
+        - Users
+      security:
+        - google:
+            - user
+      responses:
+        200:
+          description: Returns user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        403:
+          description: Unauthorised call.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lists:
+    get:
+      summary: Get a list of all ToDo lists.
+      operationId: getLists
+      x-jvm-package: lists
+      tags:
+        - Lists
+      responses:
+        200:
+          description: All Lists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SmallListView'
+    post:
+      summary: Create a new List.
+      operationId: createList
+      x-jvm-package: lists
+      tags:
+        - Lists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WriteListView'
+      responses:
+        200:
+          description: The created list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListView'
+  /list/{id}:
+    get:
+      summary: Get a specirfic list.
+      operationId: getList
+      x-jvm-package: lists
+      tags:
+        - Lists
+      parameters:
+        - in: path
+          name: id
+          description: The id of the list to get.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: The list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListView'
+
+  /todo/{id}:
+    get:
+      summary: Get a specific todo item.
+      operationId: getTodo
+      x-jvm-package: todos
+      tags:
+        - ToDos
+      parameters:
+        - in: path
+          name: id
+          description: The id of the ToDo to get.
+          schema:
+            type: integer
+            example: 123
+      responses:
+        200:
+          description: Specirfic item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+    patch:
+      summary: Update todo
+      operationId: updateTodo
+      x-jvm-package: todos
+      tags:
+        - ToDos
+      parameters:
+        - in: path
+          name: id
+          description: The id of the ToDo to get.
+          schema:
+            type: integer
+            example:
+              123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WriteTodo'
+      responses:
+        200:
+          description: The updated object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+components:
+  securitySchemes:
+    google:
+      type: oauth2
+      description: Google OAuth login
+      flows:
+        authorizationCode:
+          authorizationUrl: https://google.com
+          tokenUrl: /token
+          refreshUrl: /token/refresh
+          scopes:
+            profile: Used to access User Data.
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1123-1234-1234-1234
+        short_name:
+          type: string
+          example: David
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: integer
+          example:
+            500
+        message:
+          type: string
+          example:
+            Internal Server Error
+    SmallListView:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        self_ref:
+          type: string
+          example: /todos/1
+        name:
+          type: string
+          example: Städa
+        experience:
+          type: object
+          properties:
+            progress:
+              type: integer
+              example: 3
+            max:
+              type: integer
+              example: 5
+    ListView:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/SmallListView'
+        - properties:
+            todos:
+              type: array
+              items:
+                $ref: '#/components/schemas/Todo'
+    WriteListView:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Städa
+    TodoId:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+    Todo:
+      allOf:
+        - $ref: '#/components/schemas/TodoId'
+        - type: object
+          properties:
+            children:
+              type: array
+              items:
+                $ref: '#/components/schemas/Todo'
+            text:
+              type: string
+              example: Städa Toan
+            done:
+              type: boolean
+              example:
+                false
+    WriteTodo:
+      type: object
+      properties:
+        text:
+          type: string
+          example: Städa Toan
+        done:
+          type: boolean
+          example:
+            false
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/TodoId'
+
+
+
+
+
+
+
