@@ -22,8 +22,12 @@ object Backend extends IOApp {
             new TodosResource[F]().routes(new todos.TodosHandlerImpl[F]())
           ).orNotFound}
         finalHttpApp = Logger.httpApp(logHeaders = true, logBody = true)(httpApp)
+        port <- Stream {
+          val portStr = sys.env("PORT")
+          Integer.valueOf(portStr)
+        }
         exitCode <- BlazeServerBuilder[F]
-          .bindHttp(8080, "0.0.0.0")
+          .bindHttp(port, "0.0.0.0")
           .withHttpApp(finalHttpApp)
           .serve
       } yield exitCode
