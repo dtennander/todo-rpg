@@ -187,7 +187,8 @@ const ListItem = ({ title, todos }) => {
                     y1="4"
                     x2="10"
                     y2="0"
-                    stroke={theme.black}
+                    stroke={`hsl(${200 +
+                      (~~(Math.random() * 12) * 120) / 12}, 80%, 50%)`}
                     stroke-width="1"
                   />
                 </g>
