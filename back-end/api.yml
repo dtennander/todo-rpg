@@ -106,11 +106,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalError'
         404:
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/NotFound'
         200:
           description: The list
           content:
@@ -136,6 +132,8 @@ paths:
       responses:
         401:
           $ref: '#/components/responses/Unauthorised'
+        404:
+          $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/InternalError'
         200:
@@ -186,6 +184,12 @@ components:
             $ref: '#/components/schemas/Error'
     InternalError:
       description: Internal error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found
       content:
         application/json:
           schema:
@@ -297,9 +301,6 @@ components:
                 false
     WriteTodo:
       type: object
-      required:
-        - text
-        - done
       properties:
         text:
           type: string

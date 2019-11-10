@@ -25,7 +25,7 @@ class ListHandlerImpl[F[_]: Sync](listRepo: ListRepository[F], todoRepo: TodoRep
         todos.count(_.done), todos.length
       ),
       todos.map(t =>
-        Todo(t.id, t.desctiption, t.done)).toIndexedSeq
+        Todo(t.id, t.description, t.done)).toIndexedSeq
     )
 
   override def createList(respond: CreateListResponse.type)(body: WriteListView): F[CreateListResponse] = for {

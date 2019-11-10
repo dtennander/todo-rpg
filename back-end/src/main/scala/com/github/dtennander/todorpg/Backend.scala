@@ -43,7 +43,7 @@ object Backend extends IOApp {
       val todoRepo = new TodoRepository[F](transactor)
       new UsersResource[F]().routes(new UserHandlerImpl[F]()) <+>
       new ListsResource[F]().routes(new lists.ListHandlerImpl[F](listRepo, todoRepo)) <+>
-      new TodosResource[F]().routes(new todos.TodosHandlerImpl[F]())
+      new TodosResource[F]().routes(new todos.TodosHandlerImpl[F](todoRepo))
   }
 
     def run(args: List[String]): IO[ExitCode] = Backend.stream.compile.drain.as(ExitCode.Success)
