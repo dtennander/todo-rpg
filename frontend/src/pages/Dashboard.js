@@ -18,7 +18,6 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: "space-between"
   },
   dialog: {
-    backgroundColor: "rgba(0,0,0,0.5)",
     position: "fixed",
     top: "50%",
     bottom: "50%",
@@ -30,6 +29,14 @@ const useStyles = createUseStyles(theme => ({
     alignItems: "center",
     overflow: "hidden"
   },
+  overlay: {
+    position: "absolute",
+    zIndex: -1,
+    height: "100%",
+    width: "100%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    cursor: "pointer"
+  },
   open: {
     top: 0,
     bottom: 0
@@ -39,8 +46,7 @@ const useStyles = createUseStyles(theme => ({
 const Dashboard = props => {
   const [listOpen, setListOpen] = useState(false);
   const theme = useTheme();
-  console.log(theme);
-  const { container, header, dialog, open } = useStyles(theme);
+  const { container, header, dialog, open, overlay } = useStyles(theme);
 
   return (
     <div className={container}>
@@ -50,10 +56,8 @@ const Dashboard = props => {
       </header>
       <Lists toggleDialog={() => setListOpen(true)} />
       <footer>Footer</footer>
-      <div
-        className={`${dialog} ${listOpen && open}`}
-        onClick={() => setListOpen(false)}
-      >
+      <div className={`${dialog} ${listOpen && open}`}>
+        <div className={overlay} onClick={() => setListOpen(false)} />
         <List />
       </div>
     </div>

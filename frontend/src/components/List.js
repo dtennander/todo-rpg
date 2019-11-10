@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme, createUseStyles } from "react-jss";
+import Sound from "react-sound";
+import pop from "../assets/sounds/cork_pop.wav";
 
 const useStyles = createUseStyles(theme => ({
   container: {
@@ -25,6 +27,10 @@ const useStyles = createUseStyles(theme => ({
     color: theme.black,
     padding: 3,
     borderRadius: 3
+  },
+  popping: {
+    transition: "3s background-color",
+    backgroundColor: theme.primary
   }
 }));
 
@@ -125,11 +131,37 @@ const mockdata = {
 };
 
 const ListItem = ({ title, todos }) => {
+  const [status, setStatus] = useState("passive");
+  const [event, setEvent] = useState(null);
   const theme = useTheme();
-  const { todo, item } = useStyles(theme);
+  const { todo, item, popping } = useStyles(theme);
   return (
-    <div className={todo}>
-      <div className={item}>{title}</div>
+    <div
+      className={todo}
+      onMouseDown={() => {
+        setStatus("hold");
+        const e = setTimeout(() => setStatus("done"), 2000);
+        setEvent(e);
+      }}
+      onMouseUp={() => {
+        clearTimeout(event);
+        setEvent(null);
+        setStatus("passive");
+      }}
+      onMouseOut={() => {
+        clearTimeout(event);
+        setEvent(null);
+        setStatus("passive");
+      }}
+    >
+      {status === "done" && (
+        <Sound
+          url={pop}
+          playStatus={Sound.status.PLAYING}
+          onFinishedPlaying={() => setStatus(false)}
+        />
+      )}
+      <div className={`${item} ${status === "hold" && popping}`}>{title}</div>
       {todos.map(todo => {
         return <ListItem {...todo} />;
       })}

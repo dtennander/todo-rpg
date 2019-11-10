@@ -17,11 +17,11 @@ const useStyles = createUseStyles(theme => ({
   }
 }));
 
-const ListWidget = ({ id, name, experience }) => {
+const ListWidget = ({ id, name, experience, toggleDialog }) => {
   const theme = useTheme();
   const { widget } = useStyles(theme);
   return (
-    <div className={widget}>
+    <div className={widget} onClick={() => toggleDialog()}>
       {name}
       <br />
       {experience.progress}/{experience.max}
@@ -41,7 +41,7 @@ const Lists = ({ toggleDialog }) => {
       const list = ids.map(id => ({ ...res[0], id }));
       setList(list);
     });
-  });
+  }, []);
   return (
     <div>
       <div>
@@ -49,7 +49,11 @@ const Lists = ({ toggleDialog }) => {
       </div>
       <div className={listContainer}>
         {list.map(todoList => (
-          <ListWidget {...todoList} />
+          <ListWidget
+            key={todoList.id}
+            {...todoList}
+            toggleDialog={toggleDialog}
+          />
         ))}
       </div>
     </div>
