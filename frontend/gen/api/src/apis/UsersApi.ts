@@ -46,14 +46,13 @@ export class UsersApi extends runtime.BaseAPI {
         }
 
         if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            if (typeof this.configuration.accessToken === 'function') {
-                headerParameters["Authorization"] = this.configuration.accessToken("google", ["user"]);
-            } else {
-                headerParameters["Authorization"] = this.configuration.accessToken;
+            const token = this.configuration.accessToken;
+            const tokenString = typeof token === 'function' ? token("google", ["user"]) : token;
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-
         const response = await this.request({
             path: `/user`,
             method: 'GET',
