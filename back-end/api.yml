@@ -113,6 +113,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListView'
+  /todo:
+    post:
+      summary: Create new todo.
+      operationId: createTodo
+      x-jvm-package: todos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/TodoId'
+                - $ref: '#/components/schemas/Todo'
+      responses:
+        200:
+          description: The new todo item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        500:
+          $ref: '#/components/responses/InternalError'
+
 
   /todo/{id}:
     get:
@@ -299,6 +323,7 @@ components:
               type: boolean
               example:
                 false
+
     WriteTodo:
       type: object
       properties:

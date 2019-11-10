@@ -6,6 +6,11 @@ import doobie.util.transactor.Transactor
 import doobie.implicits._
 
 class TodoRepository[F[_]: Sync](transactor: Transactor[F]) {
+
+    def create(description: String, ordering: Int, done: Boolean): F[Todo] =
+        sql"INSERT INTO todo (description, ordering, done) VALUES ($description, $ordering, $done)".update
+                .withUniqueGeneratedKeys[Todo]("id", "description", "ordering", "done").transact(transactor)
+
     def save(todo: Todo): F[Todo] =
         sql"""UPDATE todo
               SET descripion=${todo.description}, ordering=${todo.ordering}, done=${todo.done}

@@ -3,7 +3,7 @@ package com.github.dtennander.todorpg.todos
 import cats.Monad
 import cats.implicits._
 import com.github.dtennander.todorpg.endpoints.definitions.{Error, Todo, WriteTodo}
-import com.github.dtennander.todorpg.endpoints.todos.{GetTodoResponse, TodosHandler, UpdateTodoResponse}
+import com.github.dtennander.todorpg.endpoints.todos.{CreateTodoResponse, GetTodoResponse, TodosHandler, UpdateTodoResponse}
 
 class TodosHandlerImpl[F[_]: Monad](todoRepo: TodoRepository[F]) extends TodosHandler[F] {
   override def getTodo(respond: GetTodoResponse.type)(id: BigInt): F[GetTodoResponse] = for {
@@ -21,4 +21,8 @@ class TodosHandlerImpl[F[_]: Monad](todoRepo: TodoRepository[F]) extends TodosHa
     case Some(t) => respond.Ok(Todo(t.id, t.description, t.done))
     case None => respond.InternalServerError(Error(500, "Internal error"))
   }
+
+  def createTodo(respond: CreateTodoResponse.type)(body: WriteTodo): F[CreateTodoResponse] = for {
+    newTodo <- todoRepo.create(body.text.getOrElse(""), 0, body.done.getOrElse(false))
+  } yield respond.Ok(Todo(newTodo.id, newTodo.description, newTodo.done))
 }
