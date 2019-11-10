@@ -6,6 +6,7 @@ info:
 servers:
   - url: https://todo-rpg-api.herokuapp.com/
   - url: https://todo-rpg-api-staging.herokuapp.com/
+  - url: http://localhost:8080
 tags:
   - name: Users
     description: Informtaion about the user.
@@ -37,7 +38,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        403:
+        401:
           description: Unauthorised call.
           content:
             application/json:
@@ -160,15 +161,11 @@ paths:
 components:
   securitySchemes:
     google:
-      type: oauth2
       description: Google OAuth login
-      flows:
-        authorizationCode:
-          authorizationUrl: https://google.com
-          tokenUrl: /token
-          refreshUrl: /token/refresh
-          scopes:
-            profile: Used to access User Data.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     User:
       type: object
