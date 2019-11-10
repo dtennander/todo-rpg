@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useTheme, createUseStyles } from "react-jss";
 import Profile from "../components/Profile.js";
 import Search from "../components/Search.js";
@@ -36,8 +36,9 @@ const useStyles = createUseStyles(theme => ({
   }
 }));
 
-const Dashboard = props => {
+const Dashboard = ({ token }) => {
   const [listOpen, setListOpen] = useState(false);
+  const [user, setUser] = useState({short_name: "null", picture:""});
   const theme = useTheme();
   console.log(theme);
   const { container, header, dialog, open } = useStyles(theme);

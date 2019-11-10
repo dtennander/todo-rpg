@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTheme, createUseStyles } from "react-jss";
+import {Configuration, UsersApi} from "todo-rpg-api";
 
 const mockdata = {
   name: "Theresa",
@@ -29,12 +30,19 @@ const useStyles = createUseStyles(theme => ({
   }
 }));
 
-const Profile = () => {
-  const [data, setData] = useState({});
+
+
+const userClient = new UsersApi();
+
+const Profile = ({ token }) => {
+  const [data, setData] = useState(mockdata);
   const theme = useTheme();
+
   useEffect(() => {
-    setData(mockdata);
-  }, []);
+    userClient.getUser({Authorization: "Bearer " + token})
+        .then(rsp => setData({name: rsp.short_name, avatar: rsp.picture, level: 3}))
+  }, [token]);
+
   const { container, firstRow, image } = useStyles(theme);
 
   return (
