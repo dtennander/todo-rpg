@@ -10,7 +10,7 @@ import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
 
 
-class GoogleTokenValidator[F[_]: Sync](val verifier: GoogleIdTokenVerifier) extends TokenValidator[F] {
+class GoogleAuth[F[_]: Sync](val verifier: GoogleIdTokenVerifier) extends Authorized[F] {
   override def validate(token: Token): F[ValidationResult] = Sync[F].delay {
     verifier.verify(token) match {
       case null => Failure(new Exception("Invalid token"))
@@ -23,13 +23,13 @@ class GoogleTokenValidator[F[_]: Sync](val verifier: GoogleIdTokenVerifier) exte
   }
 }
 
-object GoogleTokenValidator {
+object GoogleAuth {
   private val transport: HttpTransport = new NetHttpTransport()
   private val jsonFactory: JsonFactory = JacksonFactory.getDefaultInstance
-  def withToken[F[_]: Sync](clientId: String): F[GoogleTokenValidator[F]] = Sync[F].delay {
+  def withToken[F[_]: Sync](clientId: String): F[GoogleAuth[F]] = Sync[F].delay {
     val verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
       .setAudience(Collections.singletonList(clientId))
       .build()
-    new GoogleTokenValidator[F](verifier)
+    new GoogleAuth[F](verifier)
   }
 }
