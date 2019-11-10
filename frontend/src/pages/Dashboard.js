@@ -47,7 +47,7 @@ const Dashboard = ({ token }) => {
     <div className={container}>
       <header className={header}>
         <Search />
-        <Profile />
+        <Profile token={token}/>
       </header>
       <Lists toggleDialog={() => setListOpen(true)} />
       <footer>Footer</footer>
