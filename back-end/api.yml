@@ -39,17 +39,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         401:
-          description: Unauthorised call.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Unauthorised'
         500:
-          description: Internal error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/InternalError'
   /lists:
     get:
       summary: Get a list of all ToDo lists.
@@ -58,6 +50,10 @@ paths:
       tags:
         - Lists
       responses:
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        500:
+          $ref: '#/components/responses/InternalError'
         200:
           description: All Lists
           content:
@@ -79,6 +75,10 @@ paths:
             schema:
               $ref: '#/components/schemas/WriteListView'
       responses:
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        500:
+          $ref: '#/components/responses/InternalError'
         200:
           description: The created list.
           content:
@@ -101,6 +101,16 @@ paths:
             type: integer
             example: 1
       responses:
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        500:
+          $ref: '#/components/responses/InternalError'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         200:
           description: The list
           content:
@@ -124,6 +134,10 @@ paths:
             type: integer
             example: 123
       responses:
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        500:
+          $ref: '#/components/responses/InternalError'
         200:
           description: Specirfic item.
           content:
@@ -152,6 +166,10 @@ paths:
             schema:
               $ref: '#/components/schemas/WriteTodo'
       responses:
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        500:
+          $ref: '#/components/responses/InternalError'
         200:
           description: The updated object.
           content:
@@ -159,6 +177,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Todo'
 components:
+  responses:
+    Unauthorised:
+      description: Unauthorised call.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalError:
+      description: Internal error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     google:
       description: Google OAuth login
@@ -201,16 +232,12 @@ components:
       type: object
       required:
         - id
-        - self_ref
         - name
         - experience
       properties:
         id:
           type: integer
           example: 1
-        self_ref:
-          type: string
-          example: /todos/1
         name:
           type: string
           example: Städa
@@ -258,14 +285,9 @@ components:
         - $ref: '#/components/schemas/TodoId'
         - type: object
           required:
-            - children
             - text
             - done
           properties:
-            children:
-              type: array
-              items:
-                $ref: '#/components/schemas/Todo'
             text:
               type: string
               example: Städa Toan
@@ -278,7 +300,6 @@ components:
       required:
         - text
         - done
-        - children
       properties:
         text:
           type: string
@@ -287,10 +308,6 @@ components:
           type: boolean
           example:
             false
-        children:
-          type: array
-          items:
-            $ref: '#/components/schemas/TodoId'
 
 
 
