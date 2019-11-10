@@ -41,7 +41,7 @@ const Lists = ({ toggleDialog }) => {
       const list = ids.map(id => ({ ...res[0], id }));
       setList(list);
     });
-  });
+  }, []);
   return (
     <div>
       <div>
