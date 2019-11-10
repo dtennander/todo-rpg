@@ -29,10 +29,14 @@ class ListHandlerImpl[F[_]: Sync](listRepo: ListRepository[F], todoRepo: TodoRep
     )
 
   override def createList(respond: CreateListResponse.type)(body: WriteListView): F[CreateListResponse] = for {
-    list <- ListView(1, body.name, experience = Experience(1, 5), todos = IndexedSeq()).pure[F]
-  } yield respond.Ok(list)
+    newList <- listRepo.createList(body.name)
+  } yield respond.Ok(ListView(newList.id, newList.name, experience = Experience(0, 0), todos = IndexedSeq()))
 
   override def getLists(respond: GetListsResponse.type)(): F[GetListsResponse] = for {
-    list <- SmallListView(1, "Ops", Experience(1,5)).pure[F]
-  } yield respond.Ok(IndexedSeq(list))
+    lists <- listRepo.getLists
+    views <- lists.map ( l => for {
+      done <- todoRepo.getDoneCount(l.id)
+      all <- todoRepo.getCount(l.id)
+    } yield SmallListView(l.id, l.name, Experience(done, all))).sequence
+  } yield respond.Ok(views.toIndexedSeq)
 }
