@@ -26,10 +26,20 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: theme.between,
     color: theme.black,
     padding: 3,
-    borderRadius: 3
+    borderRadius: 3,
+    position: "relative"
+  },
+  svgPop: {
+    position: "absolute",
+    left: "50%",
+    top: 0,
+    transform: "translateX(-50%)",
+    width: "auto",
+    height: "100%"
   },
   popping: {
-    transition: "3s background-color",
+    transitionTimingFunction: "linear",
+    transition: "2s background-color",
     backgroundColor: theme.primary
   }
 }));
@@ -134,26 +144,9 @@ const ListItem = ({ title, todos }) => {
   const [status, setStatus] = useState("passive");
   const [event, setEvent] = useState(null);
   const theme = useTheme();
-  const { todo, item, popping } = useStyles(theme);
+  const { todo, item, popping, svgPop } = useStyles(theme);
   return (
-    <div
-      className={todo}
-      onMouseDown={() => {
-        setStatus("hold");
-        const e = setTimeout(() => setStatus("done"), 2000);
-        setEvent(e);
-      }}
-      onMouseUp={() => {
-        clearTimeout(event);
-        setEvent(null);
-        setStatus("passive");
-      }}
-      onMouseOut={() => {
-        clearTimeout(event);
-        setEvent(null);
-        setStatus("passive");
-      }}
-    >
+    <div className={todo}>
       {status === "done" && (
         <Sound
           url={pop}
@@ -161,7 +154,47 @@ const ListItem = ({ title, todos }) => {
           onFinishedPlaying={() => setStatus(false)}
         />
       )}
-      <div className={`${item} ${status === "hold" && popping}`}>{title}</div>
+      <div
+        className={`${item} ${status === "hold" && popping}`}
+        onMouseDown={() => {
+          setStatus("hold");
+          const e = setTimeout(() => setStatus("done"), 2000);
+          setEvent(e);
+        }}
+        onMouseUp={() => {
+          clearTimeout(event);
+          setEvent(null);
+          setStatus("passive");
+        }}
+        onMouseOut={() => {
+          clearTimeout(event);
+          setEvent(null);
+          setStatus("passive");
+        }}
+      >
+        {title}
+        <svg className={svgPop} viewBox="0 0 20 20">
+          {status === "done" &&
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map((_, i) => {
+              console.log("hej");
+              return (
+                <g
+                  transform-origin="50% 50%"
+                  transform={`rotate(${(i * 360) / 12})`}
+                >
+                  <line
+                    x1="10"
+                    y1="4"
+                    x2="10"
+                    y2="0"
+                    stroke={theme.black}
+                    stroke-width="1"
+                  />
+                </g>
+              );
+            })}
+        </svg>
+      </div>
       {todos.map(todo => {
         return <ListItem {...todo} />;
       })}
